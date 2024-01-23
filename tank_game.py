@@ -81,6 +81,14 @@ class TankGame:
         self.tank_symbol = '⥤'
         return
 
+    def steer_forward(self):
+        self.tank_symbol = '⥥'
+        return
+
+    def steer_back(self):
+        self.tank_symbol = '⥣'
+        return
+
 if __name__ == "__main__":
     # Initialize your game object
     tg = TankGame()
@@ -105,6 +113,12 @@ if __name__ == "__main__":
             tg.info()
         elif command.lower() == 'sl':
             tg.steer_left()
+        elif command.lower() == 'sr':
+            tg.steer_right()
+        elif command.lower() == 'sf':
+            tg.steer_forward()
+        elif command.lower() == 'sb':
+            tg.steer_back()
 
 
         # TODO: Implement handling of commands here
