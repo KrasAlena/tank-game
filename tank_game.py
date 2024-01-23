@@ -43,16 +43,43 @@ class TankGame:
 
     def left(self):
         self.tank_loc_x -= 1
+        if self.tank_loc_x < 0:
+            self.tank_loc_x = self.N - 1  # Move to the last point on the right
         self.tank_symbol = '⥢'
         return self.tank_loc_x
 
-    def forward(self):
+    def right(self):
+        self.tank_loc_x += 1
+        if self.tank_loc_x >= self.N:
+            self.tank_loc_x = 0
+        self.tank_symbol = '⥤'
+        return self.tank_loc_x
+
+    def back(self):
         self.tank_loc_y -= 1
+        if self.tank_loc_y < 0:
+            self.tank_loc_y = self.N - 1
         self.tank_symbol = '⥣'
         return self.tank_loc_y
 
-    # TODO: add more methods here
+    def forward(self):
+        self.tank_loc_y += 1
+        if self.tank_loc_y >= self.N:
+            self.tank_loc_y = 0  # Move to the first point at the top
+        self.tank_symbol = '⥥'
+        return self.tank_loc_y
 
+    def info(self):
+        print(f'Current position: x = {self.tank_loc_x}, y = {self.tank_loc_y}\nShots amount: \n'
+              f'Right shots: \nLeft shots: \nBack shots: \nForward shots: ')
+
+    def steer_left(self):
+        self.tank_symbol = '⥢'
+        return
+
+    def steer_right(self):
+        self.tank_symbol = '⥤'
+        return
 
 if __name__ == "__main__":
     # Initialize your game object
@@ -62,11 +89,23 @@ if __name__ == "__main__":
         tg.print_map()
 
         command = input('Input a command: ')
-        if command.lower() == 'left':
+        if command.lower() == 'l':
             tg.left()
             print('Tank moved left.')
+        elif command.lower() == 'r':
+            tg.right()
+            print('Tank moved right.')
         elif command.lower() == 'f':
             tg.forward()
             print('Tank moved forward.')
+        elif command.lower() == 'b':
+            tg.back()
+            print('Tank moved back.')
+        elif command.lower() == 'i':
+            tg.info()
+        elif command.lower() == 'sl':
+            tg.steer_left()
+
+
         # TODO: Implement handling of commands here
 
