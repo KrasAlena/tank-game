@@ -1,4 +1,5 @@
 import random
+from tabulate import tabulate
 class TankGame:
     def __init__(self, N: int = 7, initial_score: int = 100):
         """Create a tank game object.
@@ -156,9 +157,13 @@ class TankGame:
                     (self.tank_loc_y + i) < self.N]
 
 
-    # def print_stats(self):
-    #     print(f'Player: {self.player_name}')
-    #     print
+    def print_stats(self):
+        stats_data = [
+            # ['Player', self.player_name],
+            ['Targets hit', self.target_hit],
+            ['Total shots', sum(self.shots.values())]
+        ]
+        print(tabulate(stats_data, headers=['Stat', 'Value'], tablefmt='pretty'))
 
 
 if __name__ == "__main__":
@@ -193,6 +198,8 @@ if __name__ == "__main__":
             tg.steer_back()
         elif command.lower() == "shot":
             tg.shot()
+        elif command.lower() == 'print':
+            tg.print_stats()
 
 
 
