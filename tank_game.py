@@ -1,7 +1,9 @@
 import random
+import time
 from tabulate import tabulate
+
 class TankGame:
-    def __init__(self, N: int = 7, initial_score: int = 100):
+    def __init__(self, N: int = 7, initial_score: int = 10):
         """Create a tank game object.
 
         :param N: the size of the map (grid) NxN to generate for the game.
@@ -15,6 +17,10 @@ class TankGame:
         self.target_loc_x, self.target_loc_y = self.generate_target_location()
         self.player_score = initial_score
         self.target_hit = 0
+        self.player_name = ''
+
+    def input_player_name(self):
+        self.player_name = input('Enter your name: ')
 
     def generate_target_location(self):
         while True:
@@ -58,6 +64,7 @@ class TankGame:
 
     def left(self):
         self.tank_loc_x -= 1
+        self.player_score -= 2
         if self.tank_loc_x < 0:
             self.tank_loc_x = self.N - 1  # Move to the last point on the right
         self.tank_symbol = '⥢'
@@ -66,6 +73,7 @@ class TankGame:
 
     def right(self):
         self.tank_loc_x += 1
+        self.player_score -= 2
         if self.tank_loc_x >= self.N:
             self.tank_loc_x = 0
         self.tank_symbol = '⥤'
@@ -74,6 +82,7 @@ class TankGame:
 
     def back(self):
         self.tank_loc_y -= 1
+        self.player_score -= 2
         if self.tank_loc_y < 0:
             self.tank_loc_y = self.N - 1
         self.tank_symbol = '⥣'
@@ -82,6 +91,7 @@ class TankGame:
 
     def forward(self):
         self.tank_loc_y += 1
+        self.player_score -= 2
         if self.tank_loc_y >= self.N:
             self.tank_loc_y = 0  # Move to the first point at the top
         self.tank_symbol = '⥥'
@@ -98,18 +108,22 @@ class TankGame:
 
     def steer_left(self):
         self.tank_symbol = '⥢'
+        self.player_score -= 1
         return
 
     def steer_right(self):
         self.tank_symbol = '⥤'
+        self.player_score -= 1
         return
 
     def steer_forward(self):
         self.tank_symbol = '⥥'
+        self.player_score -= 1
         return
 
     def steer_back(self):
         self.tank_symbol = '⥣'
+        self.player_score -= 1
         return
 
     def shot(self):
@@ -125,8 +139,6 @@ class TankGame:
         else:
             print('Oops..')
             self.player_score -= 10
-
-
 
     def get_tank_direction(self):
         # Determine the tank's current direction based on its symbol
@@ -156,21 +168,26 @@ class TankGame:
             return [(self.tank_loc_x, self.tank_loc_y - i) for i in range(1, self.shots[direction] + 1) if
                     (self.tank_loc_y + i) < self.N]
 
-
     def print_stats(self):
         stats_data = [
-            # ['Player', self.player_name],
+            ['Player', self.player_name],
             ['Targets hit', self.target_hit],
             ['Total shots', sum(self.shots.values())]
         ]
         print(tabulate(stats_data, headers=['Stat', 'Value'], tablefmt='pretty'))
 
+    def game_over(self):
+        print('Game over! Here are your statistics:')
+        self.print_stats()
+
 
 if __name__ == "__main__":
     # Initialize your game object
     tg = TankGame()
+    tg.input_player_name()
     # Start game loop
     while True:
+
         tg.print_map()
 
         command = input('Input a command: ')
@@ -202,5 +219,6 @@ if __name__ == "__main__":
             tg.print_stats()
 
 
-
-
+        if tg.player_score <= 0:
+            tg.game_over()
+            break
