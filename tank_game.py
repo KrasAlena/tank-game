@@ -1,3 +1,4 @@
+import random
 class TankGame:
     def __init__(self, N: int = 7):
         """Create a tank game object.
@@ -9,6 +10,16 @@ class TankGame:
         self.tank_loc_x = 2
         self.tank_loc_y = 1
         self.tank_symbol = "⥥"
+        self.shots = {'left': 0, 'right': 0, 'forward': 0, 'back': 0}
+        self.target_loc_x, self.tank_loc_y = self.generate_target_location()
+
+    def generate_target_location(self):
+        while True:
+            target_x = random.randint(0, self.N - 1)
+            target_y = random.randint(0, self.N - 1)
+
+            if (target_x, target_y) != (self.target_loc_x, self.tank_loc_y):
+                return target_x, target_y
 
     def print_map(self):
         """Print the current map of the game.
@@ -38,7 +49,7 @@ class TankGame:
                 if self.tank_loc_x == j and self.tank_loc_y == i:
                     print(f' {self.tank_symbol} ', end='')
                 else:
-                    print(" . ", end="")
+                    print(' . ', end='')
             print()
 
     def left(self):
@@ -46,6 +57,7 @@ class TankGame:
         if self.tank_loc_x < 0:
             self.tank_loc_x = self.N - 1  # Move to the last point on the right
         self.tank_symbol = '⥢'
+        self.print_map()
         return self.tank_loc_x
 
     def right(self):
@@ -53,6 +65,7 @@ class TankGame:
         if self.tank_loc_x >= self.N:
             self.tank_loc_x = 0
         self.tank_symbol = '⥤'
+        self.print_map()
         return self.tank_loc_x
 
     def back(self):
@@ -60,6 +73,7 @@ class TankGame:
         if self.tank_loc_y < 0:
             self.tank_loc_y = self.N - 1
         self.tank_symbol = '⥣'
+        self.print_map()
         return self.tank_loc_y
 
     def forward(self):
@@ -67,11 +81,15 @@ class TankGame:
         if self.tank_loc_y >= self.N:
             self.tank_loc_y = 0  # Move to the first point at the top
         self.tank_symbol = '⥥'
+        self.print_map()
         return self.tank_loc_y
 
     def info(self):
-        print(f'Current position: x = {self.tank_loc_x}, y = {self.tank_loc_y}\nShots amount: \n'
-              f'Right shots: \nLeft shots: \nBack shots: \nForward shots: ')
+        print(f'Tank direction: {self.get_tank_direction()}')
+        print(f'Tank coordinates: ({self.tank_loc_x}, {self.tank_loc_y})')
+        print(f'Total shots: {sum(self.shots.values())}')
+        for direction, count in self.shots.items():
+            print(f'Shots {direction}: {count}')
 
     def steer_left(self):
         self.tank_symbol = '⥢'
@@ -88,6 +106,40 @@ class TankGame:
     def steer_back(self):
         self.tank_symbol = '⥣'
         return
+
+    def shot(self):
+        # Increment the count of shots in the tank's current direction
+        self.shots[self.get_tank_direction()] += 1
+
+    def get_tank_direction(self):
+        # Determine the tank's current direction based on its symbol
+        if self.tank_symbol == '⥤':
+            return 'right'
+        elif self.tank_symbol == '⥢':
+            return 'left'
+        elif self.tank_symbol == '⥥':
+            return 'forward'
+        elif self.tank_symbol == '⥣':
+            return 'back'
+
+    def get_shot_positions(self):
+        # Return the positions where shots occurred based on the tank's current direction
+        direction = self.get_tank_direction()
+
+        if direction == 'left':
+            return [(self.tank_loc_x - i, self.tank_loc_y) for i in range(1, self.shots[direction] + 1) if
+                    (self.tank_loc_x - i) >= 0]
+        elif direction == 'right':
+            return [(self.tank_loc_x + i, self.tank_loc_y) for i in range(1, self.shots[direction] + 1) if
+                    (self.tank_loc_x + i) < self.N]
+        elif direction == 'forward':
+            return [(self.tank_loc_x, self.tank_loc_y + i) for i in range(1, self.shots[direction] + 1) if
+                    (self.tank_loc_y - i) >= 0]
+        elif direction == 'back':
+            return [(self.tank_loc_x, self.tank_loc_y - i) for i in range(1, self.shots[direction] + 1) if
+                    (self.tank_loc_y + i) < self.N]
+
+
 
 if __name__ == "__main__":
     # Initialize your game object
@@ -119,7 +171,9 @@ if __name__ == "__main__":
             tg.steer_forward()
         elif command.lower() == 'sb':
             tg.steer_back()
+        elif command.lower() == "shot":
+            tg.shot()
 
 
-        # TODO: Implement handling of commands here
+
 
