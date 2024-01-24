@@ -8,15 +8,15 @@ This is a simple tank game implemented in Python using the command line interfac
 ### How to Play
 
 1. Run the game by executing the Python script.
-2. Comment this line in info() method:
+_________________
+2. Comment this line in the info() method:
 ```python
 print(f'Target coordinates: {self.target_loc_x}, {self.target_loc_y}')
 ```
-
 _________________
-2.	Enter your name when prompted.
+3.	Enter your name when prompted.
 _________________
-3.	Use the following commands to control the tank:
+4.	Use the following commands to control the tank:
 
 | Keyboard | Description              |
 |----------|--------------------------|
