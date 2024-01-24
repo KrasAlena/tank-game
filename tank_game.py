@@ -1,6 +1,6 @@
 import random
 class TankGame:
-    def __init__(self, N: int = 7):
+    def __init__(self, N: int = 7, initial_score: int = 100):
         """Create a tank game object.
 
         :param N: the size of the map (grid) NxN to generate for the game.
@@ -11,14 +11,16 @@ class TankGame:
         self.tank_loc_y = 1
         self.tank_symbol = "⥥"
         self.shots = {'left': 0, 'right': 0, 'forward': 0, 'back': 0}
-        self.target_loc_x, self.tank_loc_y = self.generate_target_location()
+        self.target_loc_x, self.target_loc_y = self.generate_target_location()
+        self.player_score = initial_score
+        self.target_hit = 0
 
     def generate_target_location(self):
         while True:
             target_x = random.randint(0, self.N - 1)
             target_y = random.randint(0, self.N - 1)
 
-            if (target_x, target_y) != (self.target_loc_x, self.tank_loc_y):
+            if (target_x, target_y) != (self.tank_loc_x, self.tank_loc_y):
                 return target_x, target_y
 
     def print_map(self):
@@ -51,6 +53,7 @@ class TankGame:
                 else:
                     print(' . ', end='')
             print()
+        print(f'SCORE: {self.player_score}')
 
     def left(self):
         self.tank_loc_x -= 1
@@ -90,6 +93,7 @@ class TankGame:
         print(f'Total shots: {sum(self.shots.values())}')
         for direction, count in self.shots.items():
             print(f'Shots {direction}: {count}')
+        print(f'Target coordinates: {self.target_loc_x}, {self.target_loc_y}')
 
     def steer_left(self):
         self.tank_symbol = '⥢'
@@ -110,6 +114,18 @@ class TankGame:
     def shot(self):
         # Increment the count of shots in the tank's current direction
         self.shots[self.get_tank_direction()] += 1
+
+        shot_positions = self.get_shot_positions()
+        if (self.target_loc_x, self.target_loc_y) in shot_positions:
+            print('Hit!')
+            self.target_hit += 1
+            self.player_score += 100
+            self.generate_target_location()
+        else:
+            print('Oops..')
+            self.player_score -= 10
+
+
 
     def get_tank_direction(self):
         # Determine the tank's current direction based on its symbol
@@ -139,6 +155,10 @@ class TankGame:
             return [(self.tank_loc_x, self.tank_loc_y - i) for i in range(1, self.shots[direction] + 1) if
                     (self.tank_loc_y + i) < self.N]
 
+
+    # def print_stats(self):
+    #     print(f'Player: {self.player_name}')
+    #     print
 
 
 if __name__ == "__main__":
