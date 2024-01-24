@@ -1,6 +1,5 @@
-import random
-import time
-from tabulate import tabulate
+import random # to generate target coordinates
+from tabulate import tabulate # to print statistics in tabular form
 
 class TankGame:
     def __init__(self, N: int = 7, initial_score: int = 10):
@@ -12,6 +11,7 @@ class TankGame:
         # Hard-coded starting tank location is 2, 1
         self.tank_loc_x = 2
         self.tank_loc_y = 1
+
         self.tank_symbol = "⥥"
         self.shots = {'left': 0, 'right': 0, 'forward': 0, 'back': 0}
         self.target_loc_x, self.target_loc_y = self.generate_target_location()
@@ -19,9 +19,11 @@ class TankGame:
         self.target_hit = 0
         self.player_name = ''
 
+    # method that prompts for a player's name at the start of the game
     def input_player_name(self):
         self.player_name = input('Enter your name: ')
 
+    # method that randomly generates target a target in coordinates different from the tank coordinates
     def generate_target_location(self):
         while True:
             target_x = random.randint(0, self.N - 1)
@@ -60,22 +62,23 @@ class TankGame:
                 else:
                     print(' . ', end='')
             print()
+        # print total score
         print(f'SCORE: {self.player_score}')
 
     def left(self):
-        self.tank_loc_x -= 1
-        self.player_score -= 2
+        self.tank_loc_x -= 1 # movements
+        self.player_score -= 2 # score reducing
         if self.tank_loc_x < 0:
-            self.tank_loc_x = self.N - 1  # Move to the last point on the right
-        self.tank_symbol = '⥢'
-        self.print_map()
+            self.tank_loc_x = self.N - 1  # when reach the left border move to the last point on the right
+        self.tank_symbol = '⥢' # changing tank symbol
+        self.print_map() # re-printing map with an update tank position
         return self.tank_loc_x
 
     def right(self):
         self.tank_loc_x += 1
         self.player_score -= 2
         if self.tank_loc_x >= self.N:
-            self.tank_loc_x = 0
+            self.tank_loc_x = 0 # when reach the right border move to the last point on the left
         self.tank_symbol = '⥤'
         self.print_map()
         return self.tank_loc_x
@@ -84,7 +87,7 @@ class TankGame:
         self.tank_loc_y -= 1
         self.player_score -= 2
         if self.tank_loc_y < 0:
-            self.tank_loc_y = self.N - 1
+            self.tank_loc_y = self.N - 1 # when reach the top border move to the bottom
         self.tank_symbol = '⥣'
         self.print_map()
         return self.tank_loc_y
@@ -93,11 +96,12 @@ class TankGame:
         self.tank_loc_y += 1
         self.player_score -= 2
         if self.tank_loc_y >= self.N:
-            self.tank_loc_y = 0  # Move to the first point at the top
+            self.tank_loc_y = 0  # # when reach the bottom border move to the top
         self.tank_symbol = '⥥'
         self.print_map()
         return self.tank_loc_y
 
+    # method that prints tank location, shots amount
     def info(self):
         print(f'Tank direction: {self.get_tank_direction()}')
         print(f'Tank coordinates: ({self.tank_loc_x}, {self.tank_loc_y})')
@@ -107,8 +111,8 @@ class TankGame:
         print(f'Target coordinates: {self.target_loc_x}, {self.target_loc_y}')
 
     def steer_left(self):
-        self.tank_symbol = '⥢'
-        self.player_score -= 1
+        self.tank_symbol = '⥢' # changing tank symbol
+        self.player_score -= 1 # score reducing
         return
 
     def steer_right(self):
@@ -127,7 +131,7 @@ class TankGame:
         return
 
     def shot(self):
-        # Increment the count of shots in the tank's current direction
+        # increment the count of shots in the tank's current direction
         self.shots[self.get_tank_direction()] += 1
 
         shot_positions = self.get_shot_positions()
@@ -141,7 +145,7 @@ class TankGame:
             self.player_score -= 10
 
     def get_tank_direction(self):
-        # Determine the tank's current direction based on its symbol
+        # determine the tank's current direction based on its symbol
         if self.tank_symbol == '⥤':
             return 'right'
         elif self.tank_symbol == '⥢':
@@ -152,7 +156,7 @@ class TankGame:
             return 'back'
 
     def get_shot_positions(self):
-        # Return the positions where shots occurred based on the tank's current direction
+        # return the positions where shots occurred based on the tank's current direction
         direction = self.get_tank_direction()
 
         if direction == 'left':
@@ -168,6 +172,7 @@ class TankGame:
             return [(self.tank_loc_x, self.tank_loc_y - i) for i in range(1, self.shots[direction] + 1) if
                     (self.tank_loc_y + i) < self.N]
 
+    # method that prints game statistics
     def print_stats(self):
         stats_data = [
             ['Player', self.player_name],
@@ -182,12 +187,11 @@ class TankGame:
 
 
 if __name__ == "__main__":
-    # Initialize your game object
+    # initialize your game object
     tg = TankGame()
     tg.input_player_name()
-    # Start game loop
+    # start game loop
     while True:
-
         tg.print_map()
 
         command = input('Input a command: ')
@@ -213,12 +217,12 @@ if __name__ == "__main__":
             tg.steer_forward()
         elif command.lower() == 'sb':
             tg.steer_back()
-        elif command.lower() == "shot":
+        elif command.lower() == 'shot':
             tg.shot()
         elif command.lower() == 'print':
             tg.print_stats()
 
-
+        # end the game and print statistics when the score limit is exceed
         if tg.player_score <= 0:
             tg.game_over()
             break
