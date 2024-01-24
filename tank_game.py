@@ -2,7 +2,7 @@ import random # to generate target coordinates
 from tabulate import tabulate # to print statistics in tabular form
 
 class TankGame:
-    def __init__(self, N: int = 7, initial_score: int = 10):
+    def __init__(self, N: int = 7, initial_score: int = 100):
         """Create a tank game object.
 
         :param N: the size of the map (grid) NxN to generate for the game.
@@ -12,7 +12,7 @@ class TankGame:
         self.tank_loc_x = 2
         self.tank_loc_y = 1
 
-        self.tank_symbol = "⥥"
+        self.tank_symbol = '⥥'
         self.shots = {'left': 0, 'right': 0, 'forward': 0, 'back': 0}
         self.target_loc_x, self.target_loc_y = self.generate_target_location()
         self.player_score = initial_score
@@ -38,7 +38,7 @@ class TankGame:
         Example output for a 7x7 map:
            0  1  2  3  4  5  6
         0  .  .  .  .  .  .  .
-        1  .  .  T  .  .  .  .
+        1  .  .  ⥥  .  .  .  .
         2  .  .  .  .  .  .  .
         3  .  .  .  .  .  .  .
         4  .  .  .  .  .  .  .
@@ -222,7 +222,7 @@ if __name__ == "__main__":
         elif command.lower() == 'print':
             tg.print_stats()
 
-        # end the game and print statistics when the score limit is exceed
+        # end the game and print statistics when the score limit is reached
         if tg.player_score <= 0:
             tg.game_over()
             break
