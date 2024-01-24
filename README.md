@@ -1,5 +1,5 @@
 # Tank Game
-
+![](/tank.png)
 ### Overview
 
 This is a simple tank game implemented in Python using the command line interface.
